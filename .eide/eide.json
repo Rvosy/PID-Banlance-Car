@@ -89,7 +89,8 @@
           "Library",
           "Start",
           "System",
-          "User"
+          "User",
+          "Hardware/MPU6050DMP"
         ],
         "libList": [],
         "sourceDirList": [],
