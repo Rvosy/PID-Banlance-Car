@@ -8,10 +8,11 @@
  *************************************************************************************/
 
 #include "stm32f10x.h"                  // Device header
+#include "sys.h"
 #include "PID.h"
 
 float ek,ek_last,last_filt_Velocity,filt_Velocity,Velocity_sum;
-float target_angle = 0;//机械中值
+float target_angle = -1.5;//机械中值
 /**
  * @brief 直立环PD计算
  *
@@ -21,7 +22,7 @@ float target_angle = 0;//机械中值
 float Vertical_PID_value(float Roll1){
 		float ek_difference;
 		ek = target_angle-Roll1;
-		ek_difference= ek-ek_last;
+		ek_difference= myabs(ek-ek_last);
 		ek_last = ek;
 		if(Roll1>40 || Roll1<-40) return 0;//角度大于40度,小车可能已经倒下,关闭电机保证安全
 		return (AKp*ek+AKd*ek_difference);
@@ -37,7 +38,7 @@ float Velocity_PID_value(int speed){
 	filt_Velocity = a*speed + (1-a)*last_filt_Velocity;
 	last_filt_Velocity = filt_Velocity;
 	Velocity_sum += filt_Velocity;
-	xianfu(1000);
+	xianfu(2000);
 	return filt_Velocity * VKp+VKi*Velocity_sum;
 }
 /**

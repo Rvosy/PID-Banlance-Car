@@ -35,8 +35,9 @@ int main(void)
 	while(MPU6050_DMP_Init());
 	while (1)
 	{
-		OLED_ShowNumber(10,20,Roll,5,12);
-		OLED_ShowNumber(40,40,Velocity_sum,5,12);
+		OLED_ShowNumber(0,0,Roll,5,12);
+		OLED_ShowNumber(0,20,Velocity_sum,5,12);
+		
 		OLED_Refresh_Gram();	
 	}
 }
@@ -46,10 +47,10 @@ void EXTI15_10_IRQHandler(void) {
 		float pwmL,pwmR;	
 		float Velocity;
 		MPU6050_DMP_Get_Data(&Pitch,&Roll,&Yaw);
-		Get_Velocity_Form_Encoder(Read_Encoder(3),Read_Encoder(4));//计数值换算为速度
-		Velocity =(Velocity_Left + Velocity_Right)/2;
-		pwmL = PWM_Limit(Vertical_PID_value(Roll)+Velocity_PID_value(Velocity), 6900, -6900);
-		pwmR = PWM_Limit(Vertical_PID_value(Roll)+Velocity_PID_value(Velocity), 6900, -6900);
+		// Get_Velocity_Form_Encoder(Read_Encoder(3),Read_Encoder(4));//计数值换算为速度
+		// Velocity =(Velocity_Left + Velocity_Right)/2;
+		pwmL = PWM_Limit(Vertical_PID_value(Roll)+Velocity_PID_value(Read_Encoder(3)), 6900, -6900);
+		pwmR = PWM_Limit(Vertical_PID_value(Roll)+Velocity_PID_value(Read_Encoder(4)), 6900, -6900);
 		Set_Pwm(pwmR,pwmL);
 		EXTI_ClearITPendingBit(EXTI_Line12);//清除中断标志位   
 	}                        					
